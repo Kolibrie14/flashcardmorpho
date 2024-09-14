@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collection de Cartes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px auto;
+            width: 400px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Collection de Cartes</h1>
+
+<div id="modeSelection">
+    <p>Choisissez un mode :</p>
+    <button onclick="startGame(true)">Mode avec remise</button>
+    <button onclick="startGame(false)">Mode sans remise</button>
+</div>
+
+<div id="cardContainer" style="display: none;">
+    <div id="card" class="card"></div>
+    <div class="buttons">
+        <button id="revealButton" onclick="revealFace()">Réponse</button>
+        <button id="nextButton" onclick="nextCard()">Suivant</button>
+    </div>
+</div>
+
+<script>
+    const cards = [
+{ face1: '47 O', face2: '47 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '43 D', face2: '43 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '47 L', face2: '47 L.jpg', face1Seen: false, face2Seen: false },
+{ face1: '47 D', face2: '47 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '47 M', face2: '47 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '46 O', face2: '46 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '46 L', face2: '46 L.jpg', face1Seen: false, face2Seen: false },
+{ face1: '46 D', face2: '46 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '46 V', face2: '46 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '45 O', face2: '45 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '45 L', face2: '45 L.jpg', face1Seen: false, face2Seen: false },
+{ face1: '45 V', face2: '45 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '45 D', face2: '45 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '45 M', face2: '45 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '44 O', face2: '44 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '44 D', face2: '44 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '44 V', face2: '44 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '44 M', face2: '44 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '44 L', face2: '44 L.jpg', face1Seen: false, face2Seen: false },
+{ face1: '43 O', face2: '43 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '43 L', face2: '43 L.jpg', face1Seen: false, face2Seen: false },
+{ face1: '43 V', face2: '43 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '42 O', face2: '42 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '42 L', face2: '42 L.jpg', face1Seen: false, face2Seen: false },
+{ face1: '42 V', face2: '42 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '42 D', face2: '42 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '42 M', face2: '42 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '41 O', face2: '41 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '41 L', face2: '41 L.jpg', face1Seen: false, face2Seen: false },
+{ face1: '41 D', face2: '41 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '41 V', face2: '41 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '41 M', face2: '41 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '17 O', face2: '17 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '17 P', face2: '17 P.jpg', face1Seen: false, face2Seen: false },
+{ face1: '17 D', face2: '17 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '17 V', face2: '17 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '17 M', face2: '17 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '16 O', face2: '16 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '16 P', face2: '16 P.jpg', face1Seen: false, face2Seen: false },
+{ face1: '16 M', face2: '16 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '16 V', face2: '16 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '16 D', face2: '16 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '15 O', face2: '15 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '15 P', face2: '15 P.jpg', face1Seen: false, face2Seen: false },
+{ face1: '15 D', face2: '15 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '15 V', face2: '15 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '15 M', face2: '15 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '14 O', face2: '14 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '14 P', face2: '14 P.jpg', face1Seen: false, face2Seen: false },
+{ face1: '14 D', face2: '14 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '14 V', face2: '14 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '14 M', face2: '14 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '13 P', face2: '13 P.jpg', face1Seen: false, face2Seen: false },
+{ face1: '13 O', face2: '13 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '13 D', face2: '13 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '13 V', face2: '13 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '13 M', face2: '13 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '12 O', face2: '12 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '12 M', face2: '12 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '12 V', face2: '12 V.jpg', face1Seen: false, face2Seen: false },
+{ face1: '12 D', face2: '12 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '12 P', face2: '12 P.jpg', face1Seen: false, face2Seen: false },
+{ face1: '11 P', face2: '11 P.jpg', face1Seen: false, face2Seen: false },
+{ face1: '11 O', face2: '11 O.jpg', face1Seen: false, face2Seen: false },
+{ face1: '11 D', face2: '11 D.jpg', face1Seen: false, face2Seen: false },
+{ face1: '11 M', face2: '11 M.jpg', face1Seen: false, face2Seen: false },
+{ face1: '11 V', face2: '11 V.jpg', face1Seen: false, face2Seen: false },
+        // Ajoutez plus de cartes ici
+    ];
+
+    let currentCardIndex = null;
+    let currentFace = null;
+    let modeWithReshuffle = true;
+
+    function startGame(reshuffle) {
+        modeWithReshuffle = reshuffle;
+        document.getElementById('modeSelection').style.display = 'none';
+        document.getElementById('cardContainer').style.display = 'block';
+        nextCard();
+    }
+
+    function nextCard() {
+        if (currentFace !== null) {
+            markFaceAsSeen();
+        }
+
+        if (!modeWithReshuffle) {
+            const unseenCards = cards.filter(card => !(card.face1Seen && card.face2Seen));
+            if (unseenCards.length === 0) {
+                alert("Toutes les cartes ont été vues !");
+                return;
+            }
+            currentCardIndex = cards.indexOf(unseenCards[Math.floor(Math.random() * unseenCards.length)]);
+        } else {
+            currentCardIndex = Math.floor(Math.random() * cards.length);
+        }
+
+        showRandomFace();
+    }
+
+    function showRandomFace() {
+        const card = cards[currentCardIndex];
+        currentFace = Math.random() > 0.5 ? 'face1' : 'face2';
+        if (!modeWithReshuffle && card[`${currentFace}Seen`]) {
+            currentFace = currentFace === 'face1' ? 'face2' : 'face1';
+        }
+
+        if (currentFace === 'face2') {
+            // Affiche l'image
+            document.getElementById('card').innerHTML = `<img src="./${card.face2}" alt="${card.face1}" width="200">`;
+        } else {
+            // Affiche le texte
+            document.getElementById('card').textContent = card.face1;
+        }
+    }
+
+    function revealFace() {
+        const card = cards[currentCardIndex];
+        currentFace = currentFace === 'face1' ? 'face2' : 'face1';
+
+        if (currentFace === 'face2') {
+            document.getElementById('card').innerHTML = `<img src="${card.face2}" alt="${card.face1}" width="200">`;
+        } else {
+            document.getElementById('card').textContent = card.face1;
+        }
+    }
+
+    function markFaceAsSeen() {
+        const card = cards[currentCardIndex];
+        card[`${currentFace}Seen`] = true;
+        if (card.face1Seen && card.face2Seen && !modeWithReshuffle) {
+            cards.splice(currentCardIndex, 1);
+        }
+    }
+</script>
+
+</body>
+</html>
